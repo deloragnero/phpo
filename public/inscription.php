@@ -213,7 +213,7 @@
 </main>
 
 <footer class="site-footer">
-  <div class="container"><a href="admin/index.php">© 2026 JA SR/PF CI & Communauté des Jeunes Engagés.</a>  Tous droits réservés.</div>
+  <div class="container"><a href="admin/login.php">© 2026 JA SR/PF CI & Communauté des Jeunes Engagés.</a>  Tous droits réservés.</div>
 </footer>
 
 <script src="assets/form.js"></script>
