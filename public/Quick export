@@ -1,0 +1,42 @@
+<?php
+/**
+ * Export d'urgence - fichier temporaire à placer dans public/ (racine servie par Wasmer)
+ * Accès : https://tondomaine.wasmer.app/quick-export.php?key=ESVS2026extract
+ * ⚠️ À SUPPRIMER du dépôt une fois les données récupérées (pas de mot de passe robuste).
+ */
+
+$SECRET_KEY = 'ESVS2026extract'; // change cette valeur si tu veux, mais garde-la simple à retaper dans l'URL
+
+if (($_GET['key'] ?? '') !== $SECRET_KEY) {
+    http_response_code(403);
+    die('Accès refusé.');
+}
+
+require_once __DIR__ . '/../config/db.php';
+
+$pdo = get_db();
+$stmt = $pdo->query("SELECT * FROM inscriptions ORDER BY created_at ASC");
+$rows = $stmt->fetchAll();
+
+$filename = 'export_urgence_esvs2026_' . date('Y-m-d_His') . '.csv';
+header('Content-Type: text/csv; charset=UTF-8');
+header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+$out = fopen('php://output', 'w');
+fwrite($out, "\xEF\xBB\xBF"); // BOM UTF-8 pour Excel
+
+if (empty($rows)) {
+    fwrite($out, "Aucune donnee trouvee dans la base.\n");
+    fclose($out);
+    exit;
+}
+
+// En-têtes = toutes les colonnes de la table, dans l'ordre
+fputcsv($out, array_keys($rows[0]), ';');
+
+foreach ($rows as $r) {
+    fputcsv($out, $r, ';');
+}
+
+fclose($out);
+exit;
